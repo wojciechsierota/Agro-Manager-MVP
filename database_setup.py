@@ -2,11 +2,11 @@ import sqlite3
 
 
 def create_database():
-    # Łączymy się z bazą (jeśli nie istnieje, zostanie stworzona)
+    # Connect to the database
     conn = sqlite3.connect('agro_manager.db')
     cur = conn.cursor()
 
-    # 1. Tabela Pól (Fields)
+    # 1. Fields Table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS Fields (
             field_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,7 +15,7 @@ def create_database():
         )
     ''')
 
-    # 2. Tabela Upraw (Crops) - słownik
+    # 2. Crops Table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS Crops (
             crop_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,21 +23,20 @@ def create_database():
         )
     ''')
 
-    # 3. Tabela Zabiegów (Operations) - Serce systemu
-    # Łączy pole z konkretną czynnością i datą
+    # 3. Operations Table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS Operations (
             operation_id INTEGER PRIMARY KEY AUTOINCREMENT,
             field_id INTEGER,
-            task_name TEXT NOT NULL, -- np. 'Oprysk', 'Siew'
-            description TEXT,        -- np. 'Nawóz NPK 15-15-15'
+            task_name TEXT NOT NULL, -- e.g. 'Spraying', 'Sowing'
+            description TEXT,         -- e.g. 'NPK 15-15-15 Fertilizer'
             date TEXT NOT NULL,
-            cost REAL,               -- Koszt zabiegu (paliwo, środki)
+            cost REAL,                -- Operation cost (fuel, materials)
             FOREIGN KEY (field_id) REFERENCES Fields (field_id)
         )
     ''')
 
-    # 4. Tabela Sprzedaży (Sales) - Finanse i Analityka
+    # 4. Sales Table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS Sales (
             sale_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +52,7 @@ def create_database():
 
     conn.commit()
     conn.close()
-    print("Baza danych Agro Manager została utworzona")
+    print("Agro Manager database has been created")
 
 
 if __name__ == "__main__":
