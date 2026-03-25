@@ -2,7 +2,6 @@ import sqlite3
 
 
 def create_database():
-    # Connect to the database
     conn = sqlite3.connect('agro_manager.db')
     cur = conn.cursor()
 
