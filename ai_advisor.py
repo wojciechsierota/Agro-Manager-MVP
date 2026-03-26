@@ -4,7 +4,6 @@ from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
-# Tworzymy klienta nowym sposobem
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
@@ -26,24 +25,24 @@ def get_farm_summary():
 
 
 def ask_ai_advisor(user_question):
+
     farm_data = get_farm_summary()
-    context = f"You are a professional agronomist advisor. Farm history: {farm_data}. "
+    
+    context = f"You are a professional agronomist advisor. Here is the farm history: {farm_data}. "
     full_prompt = context + f"Farmer asks: {user_question}. Answer in English."
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-flash-lite-latest", 
             contents=full_prompt
         )
         return response.text
     except Exception as e:
-        if "429" in str(e):
-            return "AI is currently busy (Rate Limit). Please wait 30 seconds and try again."
-        return f"An error occurred: {e}"
+        return f"Error details: {e}"
 
 
 if __name__ == "__main__":
-    print("🤖 Agro AI Advisor is ready!")
+    print("Agro AI Advisor is ready!")
     question = input("Ask your AI Agronomist: ")
     print("\nAnalyzing data...")
     print(ask_ai_advisor(question))
