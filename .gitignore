@@ -2,3 +2,4 @@ agro_manager.db
 __pycache__/
 .env
 .vscode/
+trial.py
