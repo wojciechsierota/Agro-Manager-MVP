@@ -23,3 +23,4 @@ class DatabaseManager:
         return cur.fetchall()
     
     
+    
