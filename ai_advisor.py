@@ -55,6 +55,10 @@ def ask_ai_advisor():
             answer = response.text
             conversation_history.append(f"Advisor: {answer}")
             print(f"\nAdvisor: {answer}\n")
+
+            if len(conversation_history) > 10:
+                conversation_history = conversation_history[-10:]
+
         except Exception as e:
             print(f"Error: {e}\n")
 
