@@ -1,17 +1,20 @@
-import sqlite3
 import os
+import json
 from google import genai
 from dotenv import load_dotenv
+from database_manager import DatabaseManager
 
 load_dotenv()
 DB_NAME = "agro_manager.db"
+HISTORY_FILE = "history.json"
+HISTORY_LIMIT = 4
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 def get_farm_summary():
-    with sqlite3.connect(DB_NAME) as conn:
-        cur = conn.cursor()
-        cur.execute("""
+    db = DatabaseManager(DB_NAME)
+    db.connect()
+    fetch = db.fetch_all("""
             SELECT 
                 Fields.name,
                 Operations.task_name,
@@ -20,12 +23,24 @@ def get_farm_summary():
             FROM Operations
             JOIN Fields ON Operations.field_id = Fields.field_id
         """)
-        return cur.fetchall()
+    db.disconnect()
+    return fetch
+
+
+def save_history(history):
+    with open(HISTORY_FILE, "w",encoding="utf-8") as f:
+        json.dump(history, f, indent = 4, ensure_ascii=False)
+
+def load_history():
+    if os.path.exists(HISTORY_FILE):
+        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return []
 
 
 def ask_ai_advisor():
     farm_data = get_farm_summary()
-    conversation_history = []
+    conversation_history = load_history()
 
     system_context = (
         f"You are a professional agronomist advisor. "
@@ -56,8 +71,10 @@ def ask_ai_advisor():
             conversation_history.append(f"Advisor: {answer}")
             print(f"\nAdvisor: {answer}\n")
 
-            if len(conversation_history) > 10:
-                conversation_history = conversation_history[-10:]
+            if len(conversation_history) > (HISTORY_LIMIT * 2):
+                conversation_history = conversation_history[-(HISTORY_LIMIT * 2):]
+
+            save_history(conversation_history)
 
         except Exception as e:
             print(f"Error: {e}\n")
