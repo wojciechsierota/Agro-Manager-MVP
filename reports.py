@@ -1,4 +1,3 @@
-import sqlite3
 import datetime
 from database_manager import DatabaseManager
 DB_NAME = "agro_manager.db"
@@ -38,6 +37,7 @@ def add_new_field():
         print(f"Database error: {e}")
         
     db.disconnect()
+
 
 def add_operations():
     db = DatabaseManager(DB_NAME)
@@ -106,7 +106,7 @@ def delete_field():
         print(f"ID: {row[0]} | Name: {row[1]}")
     print("------------------------\n")
 
-    to_delete = int(input("Which field ID do you want to delete: "))
+    to_delete = int(input("Which field (ID) do you want to delete: "))
 
     for row in rows:
         if row[0] == to_delete:
@@ -163,4 +163,64 @@ def update_operation_cost():
                     else:
                         print("Invalid choice, type Y or N.")
     db.disconnect()
+
+
+def add_sale():
+    db = DatabaseManager(DB_NAME)
+    db.connect()
+    rows = db.fetch_all("SELECT field_id, name FROM Fields")
+
+    print("\n--- YOUR FIELDS ---")
+    if not rows:
+        print("No field to delete.")
+        db.disconnect()
+        return
+
+    for row in rows:
+        print(f"ID: {row[0]} | Name: {row[1]}")
+    print("------------------------\n")
+
+
+    field_id = int(input("On which field (ID) have you made some money: "))
+    sold_thing = input("What did you sell: ")
+    how_many = float(input("How many tons did you sell: "))
+    how_much = float(input("How much did you earn: "))
+    date = datetime.datetime.now().strftime("%Y-%m-%d")
+
+    query = "INSERT INTO Sales (field_id, crop_name, quantity_tons, total_revenue, date) VALUES (?, ?, ?, ?, ?)"
+        
+    try:
+        db.execute_query(query, (field_id, sold_thing , how_many, how_much, date))
+        print(f"\n Success: '{sold_thing}' added to sales.")
+    except Exception as e:
+        print(f"\n Database error: {e}")
+
+    db.disconnect()
+
+
+def get_financial_report():
+    db = DatabaseManager(DB_NAME)
+    db.connect()
+
+    query = """
+    SELECT 
+        Fields.name, 
+        IFNULL((SELECT SUM(cost) FROM Operations WHERE Operations.field_id = Fields.field_id), 0),
+        IFNULL((SELECT SUM(total_revenue) FROM Sales WHERE Sales.field_id = Fields.field_id), 0)
+    FROM Fields
+    """
+    
+    rows = db.fetch_all(query)
+    db.disconnect()
+
+    print("\n--- FINANCIAL REPORT ---")
+    
+    for row in rows:
+        name = row[0]
+        total_costs = row[1]
+        total_revenue = row[2]
+        
+        balance = total_revenue - total_costs
+        
+        print(f"Field: {name} | Costs: {total_costs} | Income: {total_revenue} | Balance: {balance} PLN")
 
