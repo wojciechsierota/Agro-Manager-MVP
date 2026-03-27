@@ -22,5 +22,21 @@ class DatabaseManager:
         cur.execute(query, params or ())
         return cur.fetchall()
     
+    @staticmethod
+    def get_float(prompt):
+        while True:
+            try:
+                return float(input(prompt))
+            except ValueError:
+                print("Invalid input! Please enter a number (e.g., 12.5).")
+
+    @staticmethod
+    def get_int(prompt):
+        while True:
+            try:
+                return int(input(prompt))
+            except ValueError:
+                print("Invalid input! Please enter a whole number (e.g., 1, 2, 3).")
     
+
     

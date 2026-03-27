@@ -23,14 +23,14 @@ def get_costs_report():
 
 
 def add_new_field():
+    db = DatabaseManager(DB_NAME)
+    db.connect()
     field_name = input("How do you want to name your field: ")
-    field_area = float(input("How big is your field: "))
+    field_area = db.get_int("How big is your field: ")
 
     query = "INSERT INTO Fields (name, area_ha) VALUES (?,?)"
 
     try:
-        db = DatabaseManager(DB_NAME)
-        db.connect()
         db.execute_query(query, (field_name, field_area))
         print(f"Field {field_name} added!")
     except Exception as e:
@@ -49,10 +49,10 @@ def add_operations():
         print(f"ID: {row[0]} | Name: {row[1]}")
     print("------------------------\n")
 
-    field_ID = int(input("On what field you want to do something (enter ID): "))
+    field_ID = db.get_int("On what field you want to do something (enter ID): ")
     task_name = input("What will you do: ")
     description = input("Description (or press Enter): ") or "---"
-    cost = float(input("How much will it cost: "))
+    cost = db.get_float("How much will it cost: ")
     date = datetime.datetime.now().strftime("%Y-%m-%d")
 
     query = "INSERT INTO Operations (field_id, task_name, description, date, cost) VALUES (?, ?, ?, ?, ?)"
@@ -80,7 +80,7 @@ def delete_operations():
         print(f"ID: {row[0]} | Name: {row[1]}")
     print("------------------------\n")
 
-    to_delete = int(input("Which operation ID do you want to delete: "))
+    to_delete = db.get_int("Which operation ID do you want to delete: ")
 
     try:
         db.execute_query("DELETE FROM Operations WHERE operation_id = ?", (to_delete,))
@@ -106,7 +106,7 @@ def delete_field():
         print(f"ID: {row[0]} | Name: {row[1]}")
     print("------------------------\n")
 
-    to_delete = int(input("Which field (ID) do you want to delete: "))
+    to_delete = db.get_int("Which field (ID) do you want to delete: ")
 
     for row in rows:
         if row[0] == to_delete:
@@ -144,24 +144,33 @@ def update_operation_cost():
         print(f"ID: {row[0]} | Name: {row[1]} | Cost: {row[2]}")
     print("------------------------------------------\n")
 
-    ID_change = int(input("Which task's cost do you want to change (Enter ID): "))
-    New_cost = float(input("What is the new cost: "))
+    ID_change = db.get_int("Which task's cost do you want to change (Enter ID): ")
+    New_cost = db.get_float("What is the new cost: ")
+
+    found = False
 
     for row in rows:
-            if row[0] == ID_change:
-                while True:
-                    confirmation = input(f"Are you sure you want to change cost to {New_cost}? [Y/N]: ")
-                    if confirmation.capitalize() == "Y":
-                        db.execute_query("UPDATE Operations SET cost = ? WHERE operation_id = ?", (New_cost, ID_change))
-                        print(f"Cost for operation {ID_change} updated!")
-                        db.disconnect()
-                        return
-                    elif confirmation.capitalize() == "N":
-                        print("Update cancelled.")
-                        db.disconnect()
-                        return
-                    else:
-                        print("Invalid choice, type Y or N.")
+        if row[0] == ID_change:
+            found = True
+            while True:
+                confirmation = input(f"Are you sure you want to change cost to {New_cost}? [Y/N]: ")
+                if confirmation.capitalize() == "Y":
+                    db.execute_query("UPDATE Operations SET cost = ? WHERE operation_id = ?", (New_cost, ID_change))
+                    print(f"Cost for operation {ID_change} updated!")
+                    break
+                
+                elif confirmation.capitalize() == "N":
+                    print("Update cancelled.")
+                    break
+                
+                else:
+                    print("Invalid choice, type Y or N.")
+            
+            break
+
+    if not found:
+        print("Error: ID not found in operations.")
+        
     db.disconnect()
 
 
@@ -181,10 +190,10 @@ def add_sale():
     print("------------------------\n")
 
 
-    field_id = int(input("On which field (ID) have you made some money: "))
+    field_id = db.get_int("On which field (ID) have you made some money: ")
     sold_thing = input("What did you sell: ")
-    how_many = float(input("How many tons did you sell: "))
-    how_much = float(input("How much did you earn: "))
+    how_many = db.get_float("How many tons did you sell: ")
+    how_much = db.get_float("How much did you earn: ")
     date = datetime.datetime.now().strftime("%Y-%m-%d")
 
     query = "INSERT INTO Sales (field_id, crop_name, quantity_tons, total_revenue, date) VALUES (?, ?, ?, ?, ?)"
