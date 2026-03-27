@@ -14,7 +14,7 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 def get_farm_summary():
     db = DatabaseManager(DB_NAME)
     db.connect()
-    fetch = db.fetch_all("""
+    operations = db.fetch_all("""
             SELECT 
                 Fields.name,
                 Operations.task_name,
@@ -23,8 +23,16 @@ def get_farm_summary():
             FROM Operations
             JOIN Fields ON Operations.field_id = Fields.field_id
         """)
+    
+    finances = db.fetch_all("""
+        SELECT 
+            Fields.name, 
+            IFNULL((SELECT SUM(cost) FROM Operations WHERE field_id = Fields.field_id), 0),
+            IFNULL((SELECT SUM(total_revenue) FROM Sales WHERE field_id = Fields.field_id), 0)
+        FROM Fields
+    """)
     db.disconnect()
-    return fetch
+    return f"Past Operations: {operations}. Financial data (Field, Total Costs, Total Revenue): {finances}"
 
 
 def save_history(history):
