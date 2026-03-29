@@ -14,7 +14,8 @@ def main_menu():
 6. Delete Operation
 7. Ask AI Advisor
 8. Show Financial Balance
-9. Exit
+9. Export Financial Report
+10. Exit
         """)
 
     choice = input("\nChoose an option: ")
@@ -34,8 +35,10 @@ def main_menu():
     elif choice == '7':
         ai_advisor.ask_ai_advisor()
     elif choice == '8':
-        reports.get_financial_report()    
+        reports.get_financial_report() 
     elif choice == '9':
+        reports.export_financial_report()   
+    elif choice == '10':
         print("Closing the system... Goodbye!")
         exit()
     else:
