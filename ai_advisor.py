@@ -57,7 +57,9 @@ def ask_ai_advisor():
         f"Answer in English. Be concise and practical."
     )
 
-    print("\nAgro AI Advisor is ready! (type 'quit' to exit)\n")
+    print("\nAgro AI Advisor is ready!")
+    print("Commands: 'quit' to exit, 'reset' to clear history\n")
+
 
     while True:
         user_question = input("Ask your AI Agronomist: ")
@@ -65,6 +67,12 @@ def ask_ai_advisor():
         if user_question.lower() == "quit":
             print("Goodbye!")
             break
+
+        if user_question.lower() == "reset":
+            conversation_history.clear()
+            save_history([])
+            print("History cleared!\n")
+            continue
 
         conversation_history.append(f"Farmer: {user_question}")
         full_prompt = system_context + "\n" + "\n".join(conversation_history)
