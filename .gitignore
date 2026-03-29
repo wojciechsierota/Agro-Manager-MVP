@@ -4,3 +4,4 @@ __pycache__/
 .vscode/
 trial.py
 history.json
+farm_financial_report.csv
