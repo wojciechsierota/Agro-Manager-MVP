@@ -50,19 +50,27 @@ def add_operations():
     print("------------------------\n")
 
     field_ID = db.get_int("On what field you want to do something (enter ID): ")
-    task_name = input("What will you do: ")
-    description = input("Description (or press Enter): ") or "---"
-    cost = db.get_float("How much will it cost: ")
-    date = datetime.datetime.now().strftime("%Y-%m-%d")
+    found = False
 
-    query = "INSERT INTO Operations (field_id, task_name, description, date, cost) VALUES (?, ?, ?, ?, ?)"
+    for row in rows:
+        if row[0] == field_ID:
+            found = True
+            task_name = input("What will you do: ")
+            description = input("Description (or press Enter): ") or "---"
+            cost = db.get_float("How much will it cost: ")
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
+            query = "INSERT INTO Operations (field_id, task_name, description, date, cost) VALUES (?, ?, ?, ?, ?)"
 
-    try:
-        db.execute_query(query, (field_ID, task_name, description, date, cost))
-        print(f"\n Success: '{task_name}' added to database.")
-    except Exception as e:
-        print(f"\n Database error: {e}")
+            try:
+                db.execute_query(query, (field_ID, task_name, description, date, cost))
+                print(f"\n Success: '{task_name}' added to database.")
+                break
+            except Exception as e:
+                print(f"\n Database error: {e}")
+                break
 
+    if not found:   
+        print("Error: ID not found in operations.")
     db.disconnect()
 
 
@@ -81,12 +89,21 @@ def delete_operations():
     print("------------------------\n")
 
     to_delete = db.get_int("Which operation ID do you want to delete: ")
+    found = False
+    
+    for row in rows:
+        if row[0] == to_delete:
+            found = True
+            try:
+                db.execute_query("DELETE FROM Operations WHERE operation_id = ?", (to_delete,))
+                print(f"Operation number {to_delete} deleted")
+            except Exception as e:
+                print(f"\n Database error: {e}")
+            break
 
-    try:
-        db.execute_query("DELETE FROM Operations WHERE operation_id = ?", (to_delete,))
-        print(f"Operation number {to_delete} deleted")
-    except Exception as e:
-        print(f"\n Database error: {e}")
+
+    if not found:
+        print("Error: ID not found in operations.")
 
     db.disconnect()
 
@@ -107,12 +124,15 @@ def delete_field():
     print("------------------------\n")
 
     to_delete = db.get_int("Which field (ID) do you want to delete: ")
+    found = False
 
     for row in rows:
         if row[0] == to_delete:
+            found = True
             while True:
-                confirmation = input("Are you sure? This deletes field and all operations [Y/N]: ")
-                if confirmation.capitalize() == "Y":
+                confirmation = input("Are you sure? This deletes field and all operations [Y/N]: ").upper()
+                
+                if confirmation == "Y":
                     try:
                         db.execute_query("DELETE FROM Operations WHERE field_id = ?", (to_delete,))
                         db.execute_query("DELETE FROM Fields WHERE field_id = ?", (to_delete,))
@@ -120,11 +140,19 @@ def delete_field():
                     except Exception as e:
                         print(f"\n Database error: {e}")
                     break
-                elif confirmation.capitalize() == "N":
+                
+                elif confirmation == "N":
                     print("Deletion cancelled.")
                     break
+                
                 else:
-                    print("Invalid choice.")
+                    print("Invalid choice. Please type Y or N.")
+            
+            break
+
+
+    if not found:
+        print("Error: ID not found in operations.")
 
     db.disconnect()
 
@@ -145,7 +173,7 @@ def update_operation_cost():
     print("------------------------------------------\n")
 
     ID_change = db.get_int("Which task's cost do you want to change (Enter ID): ")
-    New_cost = db.get_float("What is the new cost: ")
+    
 
     found = False
 
@@ -153,6 +181,7 @@ def update_operation_cost():
         if row[0] == ID_change:
             found = True
             while True:
+                New_cost = db.get_float("What is the new cost: ")
                 confirmation = input(f"Are you sure you want to change cost to {New_cost}? [Y/N]: ")
                 if confirmation.capitalize() == "Y":
                     db.execute_query("UPDATE Operations SET cost = ? WHERE operation_id = ?", (New_cost, ID_change))
@@ -181,7 +210,7 @@ def add_sale():
 
     print("\n--- YOUR FIELDS ---")
     if not rows:
-        print("No field to delete.")
+        print("No field to show.")
         db.disconnect()
         return
 
@@ -189,20 +218,29 @@ def add_sale():
         print(f"ID: {row[0]} | Name: {row[1]}")
     print("------------------------\n")
 
-
+    found = False
     field_id = db.get_int("On which field (ID) have you made some money: ")
-    sold_thing = input("What did you sell: ")
-    how_many = db.get_float("How many tons did you sell: ")
-    how_much = db.get_float("How much did you earn: ")
-    date = datetime.datetime.now().strftime("%Y-%m-%d")
 
-    query = "INSERT INTO Sales (field_id, crop_name, quantity_tons, total_revenue, date) VALUES (?, ?, ?, ?, ?)"
-        
-    try:
-        db.execute_query(query, (field_id, sold_thing , how_many, how_much, date))
-        print(f"\n Success: '{sold_thing}' added to sales.")
-    except Exception as e:
-        print(f"\n Database error: {e}")
+    for row in rows:
+        if row[0] == field_id:
+            found = True
+            sold_thing = input("What did you sell: ")
+            how_many = db.get_float("How many tons did you sell: ")
+            how_much = db.get_float("How much did you earn: ")
+            date = datetime.datetime.now().strftime("%Y-%m-%d")
+            
+            query = "INSERT INTO Sales (field_id, crop_name, quantity_tons, total_revenue, date) VALUES (?, ?, ?, ?, ?)"
+
+            try:
+                db.execute_query(query, (field_id, sold_thing , how_many, how_much, date))
+                print(f"\n Success: '{sold_thing}' added to sales.")
+            except Exception as e:
+                print(f"\n Database error: {e}")
+            
+            break
+
+    if not found:
+        print("Error: ID not found in operations.")
 
     db.disconnect()
 
