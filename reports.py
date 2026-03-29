@@ -1,4 +1,5 @@
 import datetime
+import csv
 from database_manager import DatabaseManager
 DB_NAME = "agro_manager.db"
 
@@ -26,7 +27,7 @@ def add_new_field():
     db = DatabaseManager(DB_NAME)
     db.connect()
     field_name = input("How do you want to name your field: ")
-    field_area = db.get_int("How big is your field: ")
+    field_area = db.get_float("How big is your field: ")
 
     query = "INSERT INTO Fields (name, area_ha) VALUES (?,?)"
 
@@ -271,3 +272,44 @@ def get_financial_report():
         
         print(f"Field: {name} | Costs: {total_costs} | Income: {total_revenue} | Balance: {balance} PLN")
 
+
+def export_financial_report():
+    db = DatabaseManager(DB_NAME)
+    db.connect()
+    file_name = "farm_financial_report.csv"
+
+    query = """
+    SELECT 
+        Fields.name, 
+        IFNULL((SELECT SUM(cost) FROM Operations WHERE Operations.field_id = Fields.field_id), 0),
+        IFNULL((SELECT SUM(total_revenue) FROM Sales WHERE Sales.field_id = Fields.field_id), 0)
+    FROM Fields
+    """
+
+    rows = db.fetch_all(query)
+    db.disconnect()
+
+    if not rows:
+        print("No data to export. Add some operations or sales first.")
+        return
+    
+    try:
+        with open(file_name, mode = "w", newline= "" , encoding= "utf-8-sig" ) as file:
+            writer = csv.writer(file, delimiter="\t")
+            
+            writer.writerow(["Field Name", "Total Costs (PLN)", "Total Revenue (PLN)", "Balance (PLN)"])
+            
+            for row in rows:
+                name = row[0]
+                costs = row[1]
+                revenue = row[2]
+                balance = revenue - costs
+                
+
+                writer.writerow([name, costs, revenue, balance])
+
+        print(f"Success! Report saved as: {file_name}")
+        print("You can now open this file in Excel.")
+        
+    except Exception as e:
+        print(f"Failed to save file: {e}")
