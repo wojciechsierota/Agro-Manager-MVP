@@ -19,3 +19,9 @@ A professional farm management system designed to track field operations, costs,
 2. Install required dependencies: `pip install google-generativeai`.
 3. Set up your API Key in `ai_advisor.py`.
 4. Run the app: `python main.py`.
+
+## Project Structure
+- `main.py`: Entry point with the user menu.
+- `database_manager.py`: Core SQL logic and data safety.
+- `reports.py`: Financial logic and CSV generation.
+- `ai_advisor.py`: Integration with Gemini AI.
