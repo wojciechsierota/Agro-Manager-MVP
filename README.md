@@ -68,6 +68,11 @@ GEMINI_API_KEY=your_api_key_here
 python database_setup.py
 ```
 
+### 4.5 Load sample data (optional)
+```bash
+python seed_data.py
+```
+
 ### 5. Run the app
 ```bash
 python main.py
@@ -86,6 +91,7 @@ agro-manager/
 ├── ai_advisor.py         # Google Gemini AI integration
 ├── database_manager.py   # DatabaseManager class (OOP)
 ├── database_setup.py     # Database initialization
+├── seed_data.py          # Sample data for testing
 ├── tests/
 │   ├── test_reports.py
 │   └── test_ai_advisor.py
