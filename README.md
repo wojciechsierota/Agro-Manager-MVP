@@ -6,8 +6,17 @@ A terminal-based farm management system for tracking field operations, costs, an
 
 ##  Screenshots
 
-> *(Add screenshots here — main menu, financial report, AI advisor conversation)*
+### Main Menu
+![Main Menu](screenshots/menu.png)
 
+### Field Summary
+![Field Summary](screenshots/summary.png)
+
+### Financial Report
+![Financial Report](screenshots/financial.png)
+
+### AI Advisor in action
+![AI Advisor](screenshots/ai.png)
 ---
 
 ##  Features
@@ -99,6 +108,6 @@ agro-manager/
 
 ##  Database Schema
 
-**Fields** — `field_id`, `name`, `area_ha`
-**Operations** — `operation_id`, `field_id`, `task_name`, `description`, `date`, `cost`
+**Fields** — `field_id`, `name`, `area_ha`  
+**Operations** — `operation_id`, `field_id`, `task_name`, `description`, `date`, `cost`  
 **Sales** — `sale_id`, `field_id`, `crop_name`, `quantity_tons`, `total_revenue`, `date`
