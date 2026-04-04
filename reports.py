@@ -28,11 +28,11 @@ def add_new_field():
     db.connect()
     field_name = input("How do you want to name your field: ")
     field_area = db.get_float("How big is your field: ")
-
-    query = "INSERT INTO Fields (name, area_ha) VALUES (?,?)"
+    current_crop = input("What is currently planted on this field (or press Enter): ") or "None"
+    query = "INSERT INTO Fields (name, area_ha, current_crop) VALUES (?,?,?)"
 
     try:
-        db.execute_query(query, (field_name, field_area))
+        db.execute_query(query, (field_name, field_area, current_crop))
         print(f"Field {field_name} added!")
     except Exception as e:
         print(f"Database error: {e}")
@@ -204,6 +204,22 @@ def update_operation_cost():
     db.disconnect()
 
 
+def update_current_crop():
+    db = DatabaseManager(DB_NAME)
+    db.connect()
+    rows = db.fetch_all("SELECT field_id, name, current_crop FROM Fields")
+
+    for row in rows:
+        print(f"ID: {row[0]} | Field: {row[1]} | Current crop: {row[2]}")
+
+    field_id = db.get_int("Which field do you want to update: ")
+    new_crop = input("What is now planted: ")
+
+    db.execute_query("UPDATE Fields SET current_crop = ? WHERE field_id = ?", (new_crop, field_id))
+    print(f"Crop updated!")
+    db.disconnect()
+
+
 def add_sale():
     db = DatabaseManager(DB_NAME)
     db.connect()
@@ -228,16 +244,17 @@ def add_sale():
             sold_thing = input("What did you sell: ")
             how_many = db.get_float("How many tons did you sell: ")
             how_much = db.get_float("How much did you earn: ")
+            price_per_ton = round(how_much / how_many, 2)
             date = datetime.datetime.now().strftime("%Y-%m-%d")
-            
-            query = "INSERT INTO Sales (field_id, crop_name, quantity_tons, total_revenue, date) VALUES (?, ?, ?, ?, ?)"
+
+            query = "INSERT INTO Sales (field_id, crop_name, quantity_tons, total_revenue, price_per_ton, date) VALUES (?, ?, ?, ?, ?, ?)"
 
             try:
-                db.execute_query(query, (field_id, sold_thing , how_many, how_much, date))
+                db.execute_query(query, (field_id, sold_thing, how_many, how_much, price_per_ton, date))
                 print(f"\n Success: '{sold_thing}' added to sales.")
             except Exception as e:
                 print(f"\n Database error: {e}")
-            
+
             break
 
     if not found:
@@ -313,3 +330,46 @@ def export_financial_report():
         
     except Exception as e:
         print(f"Failed to save file: {e}")
+
+
+def get_field_summary():
+    db = DatabaseManager(DB_NAME)
+    db.connect()
+
+    rows = db.fetch_all("""
+        SELECT 
+            Fields.name,
+            Fields.area_ha,
+            COUNT(Operations.operation_id) as total_operations,
+            IFNULL(SUM(Operations.cost), 0) as total_costs,
+            IFNULL((SELECT SUM(total_revenue) FROM Sales WHERE Sales.field_id = Fields.field_id), 0) as total_revenue,
+            IFNULL((SELECT GROUP_CONCAT(DISTINCT crop_name) FROM Sales WHERE Sales.field_id = Fields.field_id), 'No crops recorded') as crops
+        FROM Fields
+        LEFT JOIN Operations ON Operations.field_id = Fields.field_id
+        GROUP BY Fields.field_id
+    """)
+
+    db.disconnect()
+
+    print("\n--- FIELD SUMMARY ---")
+    if not rows:
+        print("No fields found.")
+        return
+
+    for row in rows:
+        name = row[0]
+        area = row[1]
+        operations = row[2]
+        costs = row[3]
+        revenue = row[4]
+        crops = row[5]
+        balance = revenue - costs
+
+        print(f"\n  Field: {name} ({area} ha)")
+        print(f"  Crops: {crops}")
+        print(f"  Operations: {operations}")
+        print(f"  Total Costs: {costs} PLN")
+        print(f"  Total Revenue: {revenue} PLN")
+        print(f"  Balance: {balance} PLN")
+
+    print("\n---------------------")
