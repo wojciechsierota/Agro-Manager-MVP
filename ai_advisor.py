@@ -95,6 +95,8 @@ def ask_ai_advisor():
 
         except Exception as e:
             print(f"Error: {e}\n")
+            print("Returning to main menu...\n")
+            break
 
 
 if __name__ == "__main__":
