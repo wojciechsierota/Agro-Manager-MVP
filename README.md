@@ -62,6 +62,7 @@ Create a `.env` file in the root folder:
 ```
 GEMINI_API_KEY=your_api_key_here
 ```
+Get your free API key at: https://aistudio.google.com
 
 ### 4. Set up the database
 ```bash
