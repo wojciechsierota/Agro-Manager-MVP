@@ -8,9 +8,10 @@ def create_database():
     # 1. Fields Table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS Fields (
-            field_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            area_ha REAL NOT NULL
+        field_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        area_ha REAL NOT NULL,
+        current_crop TEXT DEFAULT 'None'
         )
     ''')
 
