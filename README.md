@@ -57,6 +57,7 @@ broken down into user stories written in the standard format:
 Selected stories also include acceptance criteria to clearly define when a task 
 is considered done. The board reflects the actual development flow of the project, 
 from backlog to completion.
+
 ---
 
 ##  Getting Started
