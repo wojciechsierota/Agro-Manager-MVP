@@ -6,9 +6,6 @@ A terminal-based farm management system for tracking field operations, costs, an
 
 ##  Screenshots
 
-### Jira
-![Jira](screenshots/Jira.png)
-
 ### Main Menu
 ![Main Menu](screenshots/menu.png)
 
@@ -20,6 +17,10 @@ A terminal-based farm management system for tracking field operations, costs, an
 
 ### AI Advisor in action
 ![AI Advisor](screenshots/ai.png)
+
+### Jira
+![Jira](screenshots/Jira.png)
+
 ---
 
 ##  Features
@@ -34,18 +35,6 @@ A terminal-based farm management system for tracking field operations, costs, an
 
 ---
 
-##  Tech Stack
-
-| Tool | Purpose |
-|---|---|
-| Python 3.x | Core language |
-| SQLite3 | Local database |
-| Google Gemini API | AI Advisor engine |
-| pytest + pytest-mock | Unit testing |
-| python-dotenv | Environment variable management |
-
----
-
 ### Jira – Project Management
 
 Project scope, requirements, and progress were managed using a Jira Kanban board. 
@@ -57,6 +46,18 @@ broken down into user stories written in the standard format:
 Selected stories also include acceptance criteria to clearly define when a task 
 is considered done. The board reflects the actual development flow of the project, 
 from backlog to completion.
+
+---
+
+##  Tech Stack
+
+| Tool | Purpose |
+|---|---|
+| Python 3.x | Core language |
+| SQLite3 | Local database |
+| Google Gemini API | AI Advisor engine |
+| pytest + pytest-mock | Unit testing |
+| python-dotenv | Environment variable management |
 
 ---
 
