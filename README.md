@@ -21,6 +21,17 @@ A terminal-based farm management system for tracking field operations, costs, an
 ### Jira
 ![Jira](screenshots/Jira.png)
 
+Project scope, requirements, and progress were managed using a Jira Kanban board. 
+The board is organized into 4 epics covering the core features of the application 
+(Field Management, AI Advisor, Financial Reporting, Data Export), with each epic 
+broken down into user stories written in the standard format: 
+*"As a [role], I want [goal], so that [benefit]"*.
+
+Selected stories also include acceptance criteria to clearly define when a task 
+is considered done. The board reflects the actual development flow of the project, 
+from backlog to completion.
+
+
 ---
 
 ##  Features
@@ -32,20 +43,6 @@ A terminal-based farm management system for tracking field operations, costs, an
 - **CSV Export** — One-click export to Excel-ready `.csv` file
 - **AI Agronomist Advisor** — Ask farming questions, AI answers using your real farm data
 - **Persistent Chat History** — AI remembers your previous questions between sessions
-
----
-
-### Jira – Project Management
-
-Project scope, requirements, and progress were managed using a Jira Kanban board. 
-The board is organized into 4 epics covering the core features of the application 
-(Field Management, AI Advisor, Financial Reporting, Data Export), with each epic 
-broken down into user stories written in the standard format: 
-*"As a [role], I want [goal], so that [benefit]"*.
-
-Selected stories also include acceptance criteria to clearly define when a task 
-is considered done. The board reflects the actual development flow of the project, 
-from backlog to completion.
 
 ---
 
