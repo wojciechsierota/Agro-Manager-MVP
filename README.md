@@ -46,11 +46,17 @@ A terminal-based farm management system for tracking field operations, costs, an
 
 ---
 
-## Project Management
+### Jira – Project Management
 
-Project scope and progress were managed using Jira (Kanban board) — 
-including epics, user stories, and acceptance criteria.
+Project scope, requirements, and progress were managed using a Jira Kanban board. 
+The board is organized into 4 epics covering the core features of the application 
+(Field Management, AI Advisor, Financial Reporting, Data Export), with each epic 
+broken down into user stories written in the standard format: 
+*"As a [role], I want [goal], so that [benefit]"*.
 
+Selected stories also include acceptance criteria to clearly define when a task 
+is considered done. The board reflects the actual development flow of the project, 
+from backlog to completion.
 ---
 
 ##  Getting Started
