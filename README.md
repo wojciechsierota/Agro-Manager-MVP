@@ -6,6 +6,9 @@ A terminal-based farm management system for tracking field operations, costs, an
 
 ##  Screenshots
 
+### Jira
+![Jira](screenshots/Jira.png)
+
 ### Main Menu
 ![Main Menu](screenshots/menu.png)
 
