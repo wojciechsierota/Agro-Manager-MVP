@@ -46,6 +46,13 @@ A terminal-based farm management system for tracking field operations, costs, an
 
 ---
 
+## Project Management
+
+Project scope and progress were managed using Jira (Kanban board) — 
+including epics, user stories, and acceptance criteria.
+
+---
+
 ##  Getting Started
 
 ### 1. Clone the repository
